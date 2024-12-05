@@ -1,5 +1,7 @@
+import 'package:course_planner/router/router.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -12,8 +14,13 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: Scaffold(),
+    return MaterialApp.router(
+      debugShowCheckedModeBanner: false,
+      title: "Course Planner",
+      theme: ThemeData(
+          fontFamily: GoogleFonts.poppins().fontFamily,
+          brightness: Brightness.dark),
+      routerConfig: RouterClass().router,
     );
   }
 }
