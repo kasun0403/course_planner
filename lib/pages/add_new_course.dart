@@ -38,6 +38,11 @@ class AddNewCourse extends StatelessWidget {
         );
 
         await CourseServices().addNewCourse(course);
+        _courseNameController.clear();
+        _courseDescriptionController.clear();
+        _courseDurationController.clear();
+        _courseSheduleController.clear();
+        _courseInstructorController.clear();
 
         // Show success SnackBar
         if (context.mounted) {
