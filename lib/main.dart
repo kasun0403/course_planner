@@ -18,8 +18,13 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: "Course Planner",
       theme: ThemeData(
-          fontFamily: GoogleFonts.poppins().fontFamily,
-          brightness: Brightness.dark),
+        fontFamily: GoogleFonts.poppins().fontFamily,
+        brightness: Brightness.dark,
+        snackBarTheme: const SnackBarThemeData(
+          backgroundColor: Colors.black,
+          contentTextStyle: TextStyle(color: Colors.white),
+        ),
+      ),
       routerConfig: RouterClass().router,
     );
   }
