@@ -18,6 +18,7 @@ class CustomInputField extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 5),
       child: TextFormField(
         controller: controller,
+        validator: validator,
         decoration: InputDecoration(
             labelText: labelText,
             labelStyle: const TextStyle(color: Colors.grey),

@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:course_planner/models/course_model.dart';
-import 'package:intl/date_symbols.dart';
 
 class CourseServices {
   final CollectionReference couseCollectionReference =
@@ -28,8 +27,17 @@ class CourseServices {
         }).toList();
       });
     } catch (e) {
-      print("Error getting course $en_USPatterns");
+      print("Error getting course $e");
       return Stream.empty();
+    }
+  }
+
+  //delete course
+  Future<void> deleteCourse(String id) async {
+    try {
+      await couseCollectionReference.doc(id).delete();
+    } catch (e) {
+      print("Error getting course $e");
     }
   }
 }
