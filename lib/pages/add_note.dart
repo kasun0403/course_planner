@@ -1,6 +1,10 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:course_planner/models/course_model.dart';
+import 'package:course_planner/models/note_model.dart';
+import 'package:course_planner/services/database/note_service.dart';
+import 'package:course_planner/utils/util_functions.dart';
 import 'package:course_planner/widgets/custom_button.dart';
 import 'package:course_planner/widgets/custom_input_field.dart';
 import 'package:flutter/material.dart';
@@ -19,6 +23,7 @@ class AddNotePage extends StatefulWidget {
 }
 
 class _AddNotePageState extends State<AddNotePage> {
+  final _formKey = GlobalKey<FormState>();
   final ImagePicker _picker = ImagePicker();
   XFile? _selectedImage; // Holds the selected image
   final TextEditingController _titleController = TextEditingController();
@@ -36,55 +41,27 @@ class _AddNotePageState extends State<AddNotePage> {
   }
 
   // Method to submit the form
-  void _submitForm() async {
-    // Get the form values
-    final String title = _titleController.text;
-    final String description = _descriptionController.text;
-    final String section = _sectionController.text;
-    final String references = _referencesController.text;
+  void _submitForm(BuildContext context) async {
+    if (_formKey.currentState?.validate() ?? false) {
+      try {
+        final Note note = Note(
+          id: "",
+          title: _titleController.text,
+          description: _descriptionController.text,
+          section: _sectionController.text,
+          reference: _referencesController.text,
+          imageData: _selectedImage != null ? File(_selectedImage!.path) : null,
+        );
 
-    // Create a new note object
-    try {
-      // Note note = Note(
-      //   id: '',
-      //   title: title,
-      //   description: description,
-      //   section: section,
-      //   references: references,
-      //   imageData: _selectedImage != null ? File(_selectedImage!.path) : null,
-      // );
+        await NoteService().createNote(widget.course.id, note);
+        showSnackBar(context: context, text: "Note added succusfully");
 
-      // Create the note
-      // await NoteService().createNote(
-      //   widget.courseId,
-      //   note,
-      // );
-
-      // Show success SnackBar
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Note added successfully!'),
-          duration: Duration(
-            seconds: 1,
-          ),
-        ),
-      );
-
-      // Delay navigation to ensure SnackBar is displayed
-      await Future.delayed(const Duration(seconds: 2));
-
-      // Navigate to the home page
-      GoRouter.of(context).go('/');
-    } catch (e) {
-      print('Error creating note: $e');
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Failed to add note!'),
-          duration: Duration(
-            seconds: 1,
-          ),
-        ),
-      );
+        await Future.delayed(const Duration(seconds: 2));
+        GoRouter.of(context).go('/');
+      } catch (e) {
+        print("$e");
+        showSnackBar(context: context, text: "Failed to add note");
+      }
     }
   }
 
@@ -125,22 +102,52 @@ class _AddNotePageState extends State<AddNotePage> {
                 ),
               ),
               const SizedBox(height: 20),
-              CustomInputField(
-                controller: _titleController,
-                labelText: 'Note Title',
-              ),
-              CustomInputField(
-                controller: _descriptionController,
-                labelText: 'Description',
-              ),
-              CustomInputField(
-                controller: _sectionController,
-                labelText: 'Section Name',
-              ),
-              CustomInputField(
-                controller: _referencesController,
-                labelText: 'Reference Books',
-              ),
+              Form(
+                  key: _formKey,
+                  child: Column(
+                    children: [
+                      CustomInputField(
+                        controller: _titleController,
+                        labelText: 'Note Title',
+                        validator: (value) {
+                          if (value?.isEmpty ?? true) {
+                            return 'Please enter the Note Title';
+                          }
+                          return null;
+                        },
+                      ),
+                      CustomInputField(
+                        controller: _descriptionController,
+                        labelText: 'Description',
+                        validator: (value) {
+                          if (value?.isEmpty ?? true) {
+                            return 'Please enter the Description';
+                          }
+                          return null;
+                        },
+                      ),
+                      CustomInputField(
+                        controller: _sectionController,
+                        labelText: 'Section Name',
+                        validator: (value) {
+                          if (value?.isEmpty ?? true) {
+                            return 'Please enter the Section name';
+                          }
+                          return null;
+                        },
+                      ),
+                      CustomInputField(
+                        controller: _referencesController,
+                        labelText: 'Reference Books',
+                        validator: (value) {
+                          if (value?.isEmpty ?? true) {
+                            return 'Please enter the Reference Books';
+                          }
+                          return null;
+                        },
+                      ),
+                    ],
+                  )),
 
               const Divider(),
               const Text(
@@ -191,7 +198,7 @@ class _AddNotePageState extends State<AddNotePage> {
               const SizedBox(height: 20),
               // Submit button
               CustomButton(
-                onPressed: _submitForm,
+                onPressed: () => _submitForm(context),
                 text: 'Submit Note',
               ),
               const SizedBox(height: 20),

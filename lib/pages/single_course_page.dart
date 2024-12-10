@@ -1,6 +1,6 @@
 import 'package:course_planner/constants/colors.dart';
 import 'package:course_planner/models/course_model.dart';
-import 'package:course_planner/services/course_services.dart';
+import 'package:course_planner/services/database/course_services.dart';
 import 'package:course_planner/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';

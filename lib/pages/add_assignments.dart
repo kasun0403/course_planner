@@ -1,6 +1,6 @@
 import 'package:course_planner/models/assignment_model.dart';
 import 'package:course_planner/models/course_model.dart';
-import 'package:course_planner/services/assignment_service.dart';
+import 'package:course_planner/services/database/assignment_service.dart';
 import 'package:course_planner/utils/util_functions.dart';
 import 'package:course_planner/widgets/custom_button.dart';
 import 'package:course_planner/widgets/custom_input_field.dart';
